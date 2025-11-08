@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="hu">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Közösségi Kertek - Weboldal</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: linear-gradient(135deg, #a8e063 0%, #56ab2f 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            overflow: hidden;
+        }
+        
+        header {
+            background: linear-gradient(135deg, #56ab2f 0%, #3d7e21 100%);
+            color: white;
+            padding: 50px 40px;
+            text-align: center;
+        }
+        
+        header h1 {
+            font-size: 2.5em;
+            margin-bottom: 15px;
+        }
+        
+        header p {
+            font-size: 1.2em;
+            opacity: 0.95;
+        }
+        
+        .content {
+            padding: 50px 40px;
+        }
+        
+        .hero {
+            text-align: center;
+            margin-bottom: 50px;
+        }
+        
+        .hero h2 {
+            font-size: 2em;
+            color: #56ab2f;
+            margin-bottom: 20px;
+        }
+        
+        .hero p {
+            font-size: 1.1em;
+            color: #666;
+            max-width: 700px;
+            margin: 0 auto 30px;
+        }
+        
+        .features {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 30px;
+            margin-bottom: 50px;
+        }
+        
+        .feature-card {
+            background: #f8f9fa;
+            padding: 30px;
+            border-radius: 10px;
+            border-left: 4px solid #56ab2f;
+            transition: all 0.3s ease;
+        }
+        
+        .feature-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(86, 171, 47, 0.2);
+        }
+        
+        .feature-card h3 {
+            color: #56ab2f;
+            font-size: 1.4em;
+            margin-bottom: 15px;
+        }
+        
+        .feature-card p {
+            color: #666;
+            line-height: 1.8;
+        }
+        
+        .cta-section {
+            background: linear-gradient(135deg, #56ab2f 0%, #3d7e21 100%);
+            color: white;
+            padding: 50px 40px;
+            border-radius: 10px;
+            text-align: center;
+            margin-top: 50px;
+        }
+        
+        .cta-section h2 {
+            font-size: 2em;
+            margin-bottom: 20px;
+        }
+        
+        .cta-section p {
+            font-size: 1.1em;
+            margin-bottom: 30px;
+            opacity: 0.95;
+        }
+        
+        .btn {
+            display: inline-block;
+            padding: 15px 40px;
+            background: white;
+            color: #56ab2f;
+            text-decoration: none;
+            border-radius: 50px;
+            font-weight: bold;
+            font-size: 1.1em;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+        
+        .btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.3);
+        }
+        
+        .info-section {
+            background: #e8f5e9;
+            padding: 40px;
+            border-radius: 10px;
+            margin-bottom: 40px;
+        }
+        
+        .info-section h3 {
+            color: #3d7e21;
+            font-size: 1.6em;
+            margin-bottom: 20px;
+        }
+        
+        .info-section ul {
+            list-style: none;
+            padding-left: 0;
+        }
+        
+        .info-section ul li {
+            padding: 10px 0;
+            padding-left: 25px;
+            position: relative;
+            color: #555;
+        }
+        
+        .info-section ul li:before {
+            content: "→";
+            position: absolute;
+            left: 0;
+            color: #56ab2f;
+            font-weight: bold;
+        }
+        
+        footer {
+            background: #2d2d2d;
+            color: white;
+            text-align: center;
+            padding: 30px;
+        }
+        
+        footer p {
+            opacity: 0.8;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Közösségi Kertek Platform</h1>
+            <p>Kapcsold össze a kerteket, inspiráld a közösséget</p>
+        </header>
+        
+        <div class="content">
+            <div class="hero">
+                <h2>Hozd létre és fejleszd közösségi kertjeidet</h2>
+                <p>Platformunk segít összekapcsolni az óvodákat, iskolásokat, lakóközösségeket és időseket, hogy együtt fejlesszék városunk zöld területeit. Versenyezz, tanulj és építs közösséget!</p>
+            </div>
+            
+            <div class="features">
+                <div class="feature-card">
+                    <h3>Verseny és motiváció</h3>
+                    <p>Pontokat szerezhetsz komposztálással, öntözéssel, ültetéssel, bio termeléssel és karbantartással. Egyéni és kertenként versenyezz másokkal!</p>
+                </div>
+                
+                <div class="feature-card">
+                    <h3>Dokumentáció</h3>
+                    <p>Kövesd nyomon kerted fejlődését, dokumentáld a gyomlálást, öntözést és minden tevékenységet. Oszd meg tapasztalataidat a közösséggel.</p>
+                </div>
+                
+                <div class="feature-card">
+                    <h3>Közösségi támogatás</h3>
+                    <p>Csatlakozz óvodákhoz, iskolákhoz és lakóközösségekhez. Tanuljatok egymástól és építsetek erős helyi kapcsolatokat.</p>
+                </div>
+            </div>
+            
+            <div class="info-section">
+                <h3>Hogyan működik?</h3>
+                <ul>
+                    <li>Regisztrálj vagy csatlakozz egy meglévő kerthez</li>
+                    <li>Dokumentáld tevékenységeidet az alkalmazásban</li>
+                    <li>Gyűjts pontokat és magokat nyereményként</li>
+                    <li>Tanulj bio termelési technikákról és fenntartható módszerekről</li>
+                    <li>Vegyél részt programokon: főzés, edukáció, közösségi események</li>
+                </ul>
+            </div>
+            
+            <div class="cta-section">
+                <h2>Készen állsz csatlakozni?</h2>
+                <p>Kezdd el még ma és légy részese a városi zöldítési mozgalomnak!</p>
+                <a href="#" class="btn">Regisztráció</a>
+            </div>
+        </div>
+        
+        <footer>
+            <p>Közösségi Kertek Platform - Együtt a zöldebb városért</p>
+        </footer>
+    </div>
+</body>
+</html>
