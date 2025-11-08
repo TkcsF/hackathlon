@@ -1,0 +1,703 @@
+<!DOCTYPE html>
+<html lang="hu">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tevékenység Naplózása</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #a8e063 0%, #56ab2f 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            padding: 40px;
+        }
+        
+        h1 {
+            color: #56ab2f;
+            margin-bottom: 10px;
+            font-size: 2em;
+        }
+        
+        .subtitle {
+            color: #666;
+            margin-bottom: 30px;
+            font-size: 1.1em;
+        }
+        
+        .progress-bar {
+            width: 100%;
+            height: 8px;
+            background: #e0e0e0;
+            border-radius: 10px;
+            margin-bottom: 30px;
+            overflow: hidden;
+        }
+        
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #56ab2f, #3d7e21);
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+        
+        .form-group {
+            margin-bottom: 25px;
+        }
+        
+        label {
+            display: block;
+            color: #333;
+            font-weight: 600;
+            margin-bottom: 8px;
+            font-size: 1em;
+        }
+        
+        select, input, textarea {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 1em;
+            font-family: inherit;
+            transition: border-color 0.3s ease;
+        }
+        
+        select:focus, input:focus, textarea:focus {
+            outline: none;
+            border-color: #56ab2f;
+        }
+        
+        textarea {
+            resize: vertical;
+            min-height: 100px;
+        }
+        
+        .activity-checkbox-group {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 10px;
+        }
+        
+        .checkbox-item {
+            display: flex;
+            align-items: center;
+            padding: 10px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .checkbox-item:hover {
+            border-color: #56ab2f;
+            background: #f0f7ed;
+        }
+        
+        .checkbox-item input[type="checkbox"] {
+            width: auto;
+            margin-right: 10px;
+            cursor: pointer;
+        }
+        
+        .checkbox-item.checked {
+            border-color: #56ab2f;
+            background: #e8f5e9;
+        }
+        
+        .time-input {
+            display: grid;
+            grid-template-columns: 2fr 1fr 1fr;
+            gap: 15px;
+        }
+        
+        .image-upload-section {
+            background: #f8f9fa;
+            padding: 25px;
+            border-radius: 10px;
+            margin-bottom: 25px;
+        }
+        
+        .image-upload-section h3 {
+            color: #56ab2f;
+            margin-bottom: 20px;
+            font-size: 1.2em;
+        }
+        
+        .upload-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+        }
+        
+        .upload-box {
+            border: 2px dashed #56ab2f;
+            border-radius: 10px;
+            padding: 20px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            background: white;
+            position: relative;
+            min-height: 180px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .upload-box:hover {
+            background: #f0f7ed;
+            border-color: #3d7e21;
+        }
+        
+        .upload-box input[type="file"] {
+            display: none;
+        }
+        
+        .upload-icon {
+            font-size: 2.5em;
+            color: #56ab2f;
+            margin-bottom: 10px;
+        }
+        
+        .upload-text {
+            color: #666;
+            font-size: 0.9em;
+        }
+        
+        .upload-label {
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 10px;
+        }
+        
+        .image-preview-container {
+            position: relative;
+            display: none;
+        }
+        
+        .image-preview-container.active {
+            display: block;
+        }
+        
+        .preview-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+            gap: 10px;
+            margin-top: 15px;
+        }
+        
+        .preview-item {
+            position: relative;
+            width: 100%;
+            height: 100px;
+        }
+        
+        .image-preview {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 8px;
+        }
+        
+        .remove-image {
+            position: absolute;
+            top: 5px;
+            right: 5px;
+            background: #ff4444;
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 30px;
+            height: 30px;
+            cursor: pointer;
+            font-size: 1.2em;
+            line-height: 1;
+            transition: all 0.3s ease;
+        }
+        
+        .remove-image:hover {
+            background: #cc0000;
+            transform: scale(1.1);
+        }
+        
+        .upload-placeholder {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .colleagues-section {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 25px;
+        }
+        
+        .colleagues-section h3 {
+            color: #56ab2f;
+            margin-bottom: 15px;
+            font-size: 1.1em;
+        }
+        
+        .colleague-input-group {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 10px;
+        }
+        
+        .colleague-input-group input {
+            flex: 1;
+        }
+        
+        .btn-add-colleague {
+            padding: 12px 20px;
+            background: #56ab2f;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            white-space: nowrap;
+        }
+        
+        .btn-add-colleague:hover {
+            background: #3d7e21;
+        }
+        
+        .colleagues-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 15px;
+        }
+        
+        .colleague-tag {
+            background: #e8f5e9;
+            color: #3d7e21;
+            padding: 8px 15px;
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .colleague-tag button {
+            background: none;
+            border: none;
+            color: #3d7e21;
+            cursor: pointer;
+            font-size: 1.2em;
+            line-height: 1;
+            padding: 0;
+        }
+        
+        .colleague-tag button:hover {
+            color: #ff4444;
+        }
+        
+        .btn-submit {
+            width: 100%;
+            padding: 15px;
+            background: linear-gradient(135deg, #56ab2f 0%, #3d7e21 100%);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 1.1em;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 15px rgba(86, 171, 47, 0.3);
+        }
+        
+        .btn-submit:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(86, 171, 47, 0.4);
+        }
+        
+        .btn-submit:active {
+            transform: translateY(0);
+        }
+        
+        .success-message {
+            display: none;
+            background: #4caf50;
+            color: white;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        
+        .success-message.active {
+            display: block;
+            animation: slideIn 0.3s ease;
+        }
+        
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Tevékenység naplózása</h1>
+        <p class="subtitle">Dokumentáld munkádat és gyűjts pontokat!</p>
+        
+        <div class="progress-bar">
+            <div class="progress-fill" id="progressFill"></div>
+        </div>
+        
+        <div class="success-message" id="successMessage">
+            Tevékenység sikeresen mentve! Pontjaid frissítve lettek.
+        </div>
+        
+        <form id="activityForm">
+            <div class="form-group">
+                <label for="garden">Válassz kertet</label>
+                <select id="garden" required>
+                    <option value="">-- Válassz kertet --</option>
+                    <option value="albertfalvai">Albertfalvai közösségi kert</option>
+                    <option value="apollon">Apollón kert</option>
+                    <option value="aranykatica">Aranykatica kert</option>
+                    <option value="arnyas">Árnyas Kert</option>
+                    <option value="bekasi">Békási Kert</option>
+                    <option value="bercsenyi">Bercsényi Közösségi Kert</option>
+                    <option value="borondos">Bőröndös Közösségi Kert</option>
+                    <option value="boszikert">Böszikert</option>
+                    <option value="csardas">Csárdás Kert</option>
+                    <option value="dorottya">Dorottya kert</option>
+                    <option value="dunaparti">Duna-parti Közösségi Kert</option>
+                    <option value="elso-kispesti">Első Kis-Pesti Kert</option>
+                    <option value="frakno">Fraknó Közösségi Kert</option>
+                    <option value="grundkert4">Grundkert 4</option>
+                    <option value="hengermalom">Hengermalom Közösségi Kert</option>
+                    <option value="ibis-healing">IBIS Healing Garden</option>
+                    <option value="ibis">IBIS Közösségi Kert</option>
+                    <option value="ibolyaskert">Ibolyáskert</option>
+                    <option value="isten">Isten kertje</option>
+                    <option value="jos">Jós Utcai Közösségi Kert</option>
+                    <option value="kalot">KALOT közösségi kert</option>
+                    <option value="karpat">Kárpát Kert</option>
+                    <option value="kazan">Kazán utcai Közösségi Kert</option>
+                    <option value="kelenkert">Kelenkert</option>
+                    <option value="kisdiofa">Kisdiófa Közösségi Kert</option>
+                    <option value="korakas">Kőrakás park 35.</option>
+                    <option value="koris">Kőris Közösségi Kert</option>
+                    <option value="kuny">Kuny Domokos utcai Közösségi Kert</option>
+                    <option value="lazar">Lázár-kert</option>
+                    <option value="lorinci">Lőrinci Kertelő</option>
+                    <option value="mandula">Mandula Közösségi Kert</option>
+                    <option value="mechwart">Mechwart-kert</option>
+                    <option value="nyirpalota">NYÍRPALOTA KÖZÖSSÉGI KERT</option>
+                    <option value="ofalu">Ófalu Kert</option>
+                    <option value="ormezei">Őrmezei közösségi kert</option>
+                    <option value="orszagbiro">Országbíró Közösségi Kert</option>
+                    <option value="parti">Parti Kert</option>
+                    <option value="regarden">reGARDEN-újraKERT</option>
+                    <option value="rozsa">Rózsa közösségi kert</option>
+                    <option value="saskert">Saskert</option>
+                    <option value="toldy">Toldy Kert</option>
+                    <option value="tolnai">Tolnai közösségi kert</option>
+                    <option value="ujpalota5">Újpalota 5. közösségi kertje</option>
+                    <option value="ujpalota6">Újpalota 6. közösségi kertje</option>
+                    <option value="ujpesti">Újpesti Közösségi Tankert</option>
+                    <option value="viola">Viola Közösségi Kert</option>
+                    <option value="zapor">Zápor kert</option>
+                    <option value="zengo">Zengő kert</option>
+                    <option value="zoldello">Zöldellő Zugló</option>
+                    <option value="zoldpalota">Zöldpalota kert</option>
+                    <option value="zug-padlizsan">ZUG Padlizsán Kert</option>
+                    <option value="zug-zsalya">ZUG Zsálya Kert</option>
+                    <option value="zugloi">Zuglói erdőkert</option>
+                </select>
+            </div>
+            
+            <div class="form-group">
+                <label for="location">Helyszín a kerten belül</label>
+                <input type="text" id="location" placeholder="pl. Északi parcella, 3. sor" required>
+            </div>
+            
+            <div class="form-group">
+                <label>Tevékenység típusa (több is választható)</label>
+                <div class="activity-checkbox-group">
+                    <label class="checkbox-item">
+                        <input type="checkbox" name="activity" value="komposzt">
+                        <span>Komposztálás</span>
+                    </label>
+                    <label class="checkbox-item">
+                        <input type="checkbox" name="activity" value="ontotes">
+                        <span>Öntözés + esővíz</span>
+                    </label>
+                    <label class="checkbox-item">
+                        <input type="checkbox" name="activity" value="ultetes">
+                        <span>Ültetés</span>
+                    </label>
+                    <label class="checkbox-item">
+                        <input type="checkbox" name="activity" value="bio-termeles">
+                        <span>Bio termelés</span>
+                    </label>
+                    <label class="checkbox-item">
+                        <input type="checkbox" name="activity" value="karbantartas">
+                        <span>Karbantartás</span>
+                    </label>
+                    <label class="checkbox-item">
+                        <input type="checkbox" name="activity" value="gyomlatas">
+                        <span>Gyomlálás</span>
+                    </label>
+                    <label class="checkbox-item">
+                        <input type="checkbox" name="activity" value="egyeb">
+                        <span>Egyéb</span>
+                    </label>
+                </div>
+            </div>
+            
+            <div class="form-group">
+                <label for="description">Tevékenység leírása</label>
+                <textarea id="description" placeholder="Részletezd, mit csináltál..." required></textarea>
+            </div>
+            
+            <div class="form-group">
+                <label>Dátum és időtartam</label>
+                <div class="time-input">
+                    <div>
+                        <input type="date" id="date" required>
+                    </div>
+                    <div>
+                        <input type="number" id="hours" min="0" max="24" placeholder="Óra" value="0" required>
+                    </div>
+                    <div>
+                        <input type="number" id="minutes" min="0" max="59" placeholder="Perc" value="0" required>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="colleagues-section">
+                <h3>Munkatársak</h3>
+                <div class="colleague-input-group">
+                    <input type="text" id="colleagueInput" placeholder="Munkatárs neve">
+                    <button type="button" class="btn-add-colleague" id="addColleague">Hozzáad</button>
+                </div>
+                <div class="colleagues-list" id="colleaguesList"></div>
+            </div>
+            
+            <div class="image-upload-section">
+                <h3>Fotódokumentáció</h3>
+                <div class="upload-grid">
+                    <div>
+                        <div class="upload-label" style="margin-bottom: 10px;">Előtte képek</div>
+                        <div class="upload-box" onclick="document.getElementById('beforeImages').click()">
+                            <div class="upload-placeholder" id="beforePlaceholder">
+                                <div class="upload-icon">📷</div>
+                                <div class="upload-text">Kattints több kép feltöltéséhez</div>
+                            </div>
+                            <input type="file" id="beforeImages" accept="image/*" multiple onchange="previewMultipleImages(this, 'beforePreviewContainer')">
+                        </div>
+                        <div id="beforePreviewContainer" class="preview-grid"></div>
+                    </div>
+                    
+                    <div>
+                        <div class="upload-label" style="margin-bottom: 10px;">Utána képek</div>
+                        <div class="upload-box" onclick="document.getElementById('afterImages').click()">
+                            <div class="upload-placeholder" id="afterPlaceholder">
+                                <div class="upload-icon">📷</div>
+                                <div class="upload-text">Kattints több kép feltöltéséhez</div>
+                            </div>
+                            <input type="file" id="afterImages" accept="image/*" multiple onchange="previewMultipleImages(this, 'afterPreviewContainer')">
+                        </div>
+                        <div id="afterPreviewContainer" class="preview-grid"></div>
+                    </div>
+                </div>
+            </div>
+            
+            <button type="submit" class="btn-submit">Tevékenység mentése</button>
+        </form>
+    </div>
+    
+    <script>
+        // Dátum alapértelmezett érték mai napra
+        document.getElementById('date').valueAsDate = new Date();
+        
+        // Kollégák kezelése
+        let colleagues = [];
+        
+        document.getElementById('addColleague').addEventListener('click', function() {
+            const input = document.getElementById('colleagueInput');
+            const name = input.value.trim();
+            
+            if (name && !colleagues.includes(name)) {
+                colleagues.push(name);
+                updateColleaguesList();
+                input.value = '';
+            }
+        });
+        
+        function updateColleaguesList() {
+            const list = document.getElementById('colleaguesList');
+            list.innerHTML = colleagues.map(name => `
+                <div class="colleague-tag">
+                    <span>${name}</span>
+                    <button type="button" onclick="removeColleague('${name}')">×</button>
+                </div>
+            `).join('');
+        }
+        
+        function removeColleague(name) {
+            colleagues = colleagues.filter(c => c !== name);
+            updateColleaguesList();
+        }
+        
+        // Checkbox stílus kezelése
+        document.querySelectorAll('.checkbox-item input[type="checkbox"]').forEach(checkbox => {
+            checkbox.addEventListener('change', function() {
+                if (this.checked) {
+                    this.closest('.checkbox-item').classList.add('checked');
+                } else {
+                    this.closest('.checkbox-item').classList.remove('checked');
+                }
+                updateProgress();
+            });
+        });
+        
+        // Progress bar frissítése
+        function updateProgress() {
+            const totalFields = 7;
+            let filledFields = 0;
+            
+            if (document.getElementById('date').value) filledFields++;
+            if (document.getElementById('garden').value) filledFields++;
+            if (document.getElementById('location').value) filledFields++;
+            if (document.querySelector('input[name="activity"]:checked')) filledFields++;
+            if (document.getElementById('description').value) filledFields++;
+            if (document.getElementById('hours').value > 0 || document.getElementById('minutes').value > 0) filledFields++;
+            if (document.getElementById('beforeImages').files.length > 0 || 
+                document.getElementById('afterImages').files.length > 0) filledFields++;
+            
+            const percentage = (filledFields / totalFields) * 100;
+            document.getElementById('progressFill').style.width = percentage + '%';
+        }
+        
+        // Progress bar figyelés
+        document.querySelectorAll('input, select, textarea').forEach(element => {
+            element.addEventListener('input', updateProgress);
+            element.addEventListener('change', updateProgress);
+        });
+        
+        // Több kép előnézete
+        function previewMultipleImages(input, containerId) {
+            const container = document.getElementById(containerId);
+            container.innerHTML = '';
+            const files = Array.from(input.files);
+            
+            files.forEach((file, index) => {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const previewItem = document.createElement('div');
+                    previewItem.className = 'preview-item';
+                    previewItem.innerHTML = `
+                        <img src="${e.target.result}" class="image-preview">
+                        <button type="button" class="remove-image" onclick="removeMultipleImage('${input.id}', ${index}, '${containerId}')">×</button>
+                    `;
+                    container.appendChild(previewItem);
+                }
+                reader.readAsDataURL(file);
+            });
+            
+            updateProgress();
+        }
+        
+        // Kép törlése több képes verzióban
+        function removeMultipleImage(inputId, imageIndex, containerId) {
+            const input = document.getElementById(inputId);
+            const dt = new DataTransfer();
+            const files = Array.from(input.files);
+            
+            files.forEach((file, index) => {
+                if (index !== imageIndex) {
+                    dt.items.add(file);
+                }
+            });
+            
+            input.files = dt.files;
+            previewMultipleImages(input, containerId);
+        }
+        
+        // Form submit
+        document.getElementById('activityForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const selectedActivities = Array.from(document.querySelectorAll('input[name="activity"]:checked'))
+                .map(cb => cb.value);
+            
+            if (selectedActivities.length === 0) {
+                alert('Válassz ki legalább egy tevékenységet!');
+                return;
+            }
+            
+            const formData = {
+                date: document.getElementById('date').value,
+                garden: document.getElementById('garden').value,
+                location: document.getElementById('location').value,
+                activities: selectedActivities,
+                description: document.getElementById('description').value,
+                hours: document.getElementById('hours').value,
+                minutes: document.getElementById('minutes').value,
+                colleagues: colleagues,
+                beforeImages: Array.from(document.getElementById('beforeImages').files),
+                afterImages: Array.from(document.getElementById('afterImages').files)
+            };
+            
+            console.log('Tevékenység adatok:', formData);
+            
+            // Siker üzenet
+            const successMessage = document.getElementById('successMessage');
+            successMessage.classList.add('active');
+            
+            // Űrlap ürítése
+            this.reset();
+            colleagues = [];
+            updateColleaguesList();
+            document.querySelectorAll('.checkbox-item').forEach(item => item.classList.remove('checked'));
+            document.getElementById('beforePreviewContainer').innerHTML = '';
+            document.getElementById('afterPreviewContainer').innerHTML = '';
+            
+            // Progress bar nullázása
+            document.getElementById('progressFill').style.width = '0%';
+            
+            // Dátum visszaállítása mai napra
+            document.getElementById('date').valueAsDate = new Date();
+            
+            // Üzenet elrejtése
+            setTimeout(() => {
+                successMessage.classList.remove('active');
+            }, 3000);
+            
+            // Görgetés az oldal tetejére
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        });
+    </script>
+</body>
+</html>
